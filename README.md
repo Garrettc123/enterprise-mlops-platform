@@ -27,7 +27,7 @@ For comprehensive usage instructions and examples, see the [User Guide](USER_GUI
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.8+
 - NumPy >= 1.24.0
 
 ## Performance

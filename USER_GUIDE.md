@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 
 Requirements:
-- Python 3.7+
+- Python 3.8+
 - NumPy >= 1.24.0
 
 ## Quick Start
