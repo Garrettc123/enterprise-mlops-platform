@@ -107,7 +107,7 @@ model = registry.register_model(
     latency_ms=45.5
 )
 
-print(f"Registered {model.version} with status {model.status}")
+print(f"Registered {model.version} with status {model.status.value}")
 
 # Promote to production
 success = registry.promote_to_production(model.id)
