@@ -6,7 +6,6 @@ A/B testing, monitoring, auto-retraining. Deploy ML models 50x faster.
 
 import asyncio
 import logging
-import json
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -444,7 +443,7 @@ class MLOpsPlatform:
                         self.ab_testing.record_request(test_id, model, success)
                         
                     # Analyze
-                    result = self.ab_testing.analyze_test(test_id)
+                    self.ab_testing.analyze_test(test_id)
                     
         # Monitor production models
         for model in self.model_registry.get_production_models():
@@ -475,13 +474,13 @@ class MLOpsPlatform:
         logger.info(f"Retraining Jobs: {len(self.auto_retrain.retraining_jobs)}")
         
         cluster_stats = self.gpu_cluster.get_cluster_stats()
-        logger.info(f"\nGPU Cluster:")
+        logger.info("\nGPU Cluster:")
         logger.info(f"  Total GPUs: {cluster_stats['total_gpus']}")
         logger.info(f"  Avg Utilization: {cluster_stats['avg_utilization']:.1%}")
         logger.info(f"  Available: {cluster_stats['available_gpus']}")
         
-        logger.info(f"\nDeployment Speed: 50x faster (98% reduction)")
-        logger.info(f"Model Uptime: 99.9%")
+        logger.info("\nDeployment Speed: 50x faster (98% reduction)")
+        logger.info("Model Uptime: 99.9%")
         
         logger.info("\n" + "="*60)
 
