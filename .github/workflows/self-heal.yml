@@ -1,0 +1,31 @@
+name: 🩺 Self-Heal
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  heal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Deps + YAML validation
+        run: |
+          pip install pyyaml -q
+          [ -f requirements.txt ] && pip install -r requirements.txt -q || true
+          python3 -c "
+import os, yaml
+for fn in os.listdir('.github/workflows'):
+    if fn.endswith(('.yml','.yaml')):
+        try: yaml.safe_load(open(f'.github/workflows/{fn}')); print(f'OK {fn}')
+        except yaml.YAMLError as e: print(f'ERR {fn}: {e}')
+"
+        continue-on-error: true
+      - run: echo "Self-heal $(date -u)"
