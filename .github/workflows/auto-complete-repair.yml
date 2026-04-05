@@ -5,7 +5,7 @@ on:
     workflows: ['CI/CD Pipeline']
     types: [completed]
   schedule:
-    - cron: '0 */4 * * *'  # Every 4 hours
+    - cron: '17 3 * * *'  # Daily at 3:17 UTC
   workflow_dispatch:
 
 jobs:
@@ -168,21 +168,24 @@ jobs:
           echo "::notice::Code quality improved"
       
       - name: Commit Repairs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -z "$GITHUB_TOKEN" ]; then echo "⚠️ Secret not set, skipping"; exit 0; fi
           git config user.name "AI Code Repair Bot"
           git config user.email "ai-repair@bot.local"
-          
+
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "🤖 Auto-repair: Fix failing tests, update dependencies, improve code quality
-            
+
             - Auto-fixed formatting and linting issues
             - Resolved dependency conflicts
             - Generated missing test files
             - Applied security patches
             - Improved type safety
             - Updated configuration files
-            
+
             Triggered by: ${{ github.event_name }}" || true
             git push origin main 2>/dev/null || echo "Push skipped"
           else
@@ -240,19 +243,22 @@ jobs:
           echo "::notice::Database models generated"
       
       - name: Commit Auto-Completions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -z "$GITHUB_TOKEN" ]; then echo "⚠️ Secret not set, skipping"; exit 0; fi
           git config user.name "AI Feature Completion Bot"
           git config user.email "ai-complete@bot.local"
-          
+
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "✨ Auto-complete: Generate missing implementations and handlers
-            
+
             - Generated stub implementations from abstract classes
             - Created API route handlers
             - Generated database models
             - Added configuration templates
-            
+
             Triggered by: Auto-completion pipeline" || true
             git push origin main 2>/dev/null || true
           fi

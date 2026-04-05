@@ -1,5 +1,8 @@
 name: Auto-Deploy AI Platform
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest

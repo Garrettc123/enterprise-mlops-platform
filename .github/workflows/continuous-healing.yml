@@ -2,7 +2,7 @@ name: Continuous Code Healing
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Hourly
+    - cron: '22 7 * * *'  # Daily at 7:22 UTC
   workflow_dispatch:
 
 jobs:
@@ -130,21 +130,24 @@ EOF
           echo "::notice::Documentation generated"
       
       - name: Commit Healing Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -z "$GITHUB_TOKEN" ]; then echo "⚠️ Secret not set, skipping"; exit 0; fi
           git config user.name "Auto-Healing Bot"
           git config user.email "heal@bot.local"
-          
+
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "🏥 Automated health maintenance and healing
-            
+
             - Updated dependencies and security patches
             - Optimized performance and code quality
             - Cleaned up logs and cache
             - Generated/updated documentation
             - Fixed broken links and syntax errors
-            
-            Hourly maintenance cycle" || true
+
+            Daily maintenance cycle" || true
             git push origin main 2>/dev/null || true
           else
             echo "::notice::Repository is healthy - no changes needed"

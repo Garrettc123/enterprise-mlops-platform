@@ -4,6 +4,8 @@ on:
     types: [opened, synchronize, ready_for_review]
   check_suite:
     types: [completed]
+  schedule:
+    - cron: '43 5 * * *'  # Daily at 5:43 UTC
   workflow_dispatch:
 jobs:
   auto-merge:
@@ -16,6 +18,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ -z "$GH_TOKEN" ]; then echo "⚠️ Secret not set, skipping"; exit 0; fi
           OPEN_PRS=$(gh pr list --repo ${{ github.repository }} --state open --json number,isDraft,mergeable 2>/dev/null || echo '[]')
           echo "$OPEN_PRS" | jq -r '.[] | select(.isDraft == false) | .number' | while read PR_NUM; do
             MERGEABLE=$(echo "$OPEN_PRS" | jq -r --argjson n $PR_NUM '.[] | select(.number == $n) | .mergeable')
