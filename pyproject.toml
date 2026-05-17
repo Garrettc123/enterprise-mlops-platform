@@ -1,12 +1,13 @@
-[build-system]
-requires = ["setuptools>=65.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "enterprise-mlops-platform"
 version = "1.0.0"
 description = "Enterprise MLOps platform with experiment tracking and model management"
 requires-python = ">=3.10"
 
-[project.scripts]
-app = "app:app"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "httpx>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0"
+]
