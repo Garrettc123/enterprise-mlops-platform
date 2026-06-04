@@ -1,0 +1,40 @@
+name: 💓 MLOps Health Monitor
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  health:
+    name: Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check service health
+        run: |
+          URL="${{ secrets.MLOPS_DEPLOY_URL }}"
+          if [ -z "$URL" ]; then
+            echo '⚠️ MLOPS_DEPLOY_URL not configured yet'
+            exit 0
+          fi
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' "$URL/health" || echo '000')
+          echo "MLOps health → $STATUS"
+          [ "$STATUS" = "200" ] && echo '✅ Healthy' || echo '❌ Down'
+        env:
+          MLOPS_DEPLOY_URL: ${{ secrets.MLOPS_DEPLOY_URL }}
+
+  auto-retrain-check:
+    name: 🧠 Auto-Retrain Trigger Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check if retraining needed
+        run: |
+          if [ -f scripts/retrain_check.py ]; then
+            python scripts/retrain_check.py
+          else
+            echo '✅ Auto-retrain script not yet configured — skipping'
+          fi
